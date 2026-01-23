@@ -6,6 +6,7 @@ const { NODE_ENV } = require("./config/env");
 
 const healthRoutes = require("./routes/health_routes");
 const authRoutes=require("./routes/auth_routes")
+const job_routes=require("./routes/job_routes")
 
 const app = express();
 
@@ -21,6 +22,7 @@ if (NODE_ENV === "development") {
 
 app.use("/health", healthRoutes);
 app.use("/auth",authRoutes);
+app.use("/jobs",job_routes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
