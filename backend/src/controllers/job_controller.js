@@ -142,5 +142,79 @@ const deleteJob = async (req, res, next) => {
   }
 };
 
+const updateJobStatus = async(req,res,next)=>{
+  try{
+      const{id}=req.params;
+      const userId=req.user.userId;
+      const {status}=req.body;
+      const allowedStatuses = Job.schema.path("status").enumValues;
+      if(!status || !allowedStatuses.includes(status)){
+        return res.status(400).json({
+          success:false,
+          message:`Invalid status. Allowed: ${allowedStatuses.join(",")}`
+        })
+      }
+      const job = await Job.findOneAndUpdate(
+      { _id: id, user: userId },        
+      { $set: { status } },             
+      { new: true }                     
+    );
 
-module.exports={createJob,getJobs,getJobById,updateJob,deleteJob};
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found"
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Status updated successfully",
+      data: job
+    });
+  }
+  catch(err){
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message
+    });
+  }
+}
+
+const getJobStats = async (req, res) => {
+  try {
+    const userId = new mongoose.Types.ObjectId(req.user.userId);
+    
+    const stats = await Job.aggregate([
+      { $match: { user: userId } },
+      { $group: { _id: "$status", count: { $sum: 1 } } }
+    ]);
+
+    const statusCounts = stats.reduce((acc, cur) => {
+      acc[cur._id] = cur.count;
+      return acc;
+    }, {});
+
+    const allowedStatuses = Job.schema.path("status").enumValues;
+    for (const s of allowedStatuses) {
+      if (statusCounts[s] == null) statusCounts[s] = 0;
+    }
+
+    const total = Object.values(statusCounts).reduce((a, b) => a + b, 0);
+
+    return res.status(200).json({
+      success: true,
+      message: "Job statistics fetched successfully",
+      data: { total, byStatus: statusCounts }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message
+    });
+  }
+};
+
+
+module.exports={createJob,getJobs,getJobById,updateJob,deleteJob,updateJobStatus,getJobStats};
