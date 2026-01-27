@@ -1,0 +1,13 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background: #fafafa;
+  color: #111;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
