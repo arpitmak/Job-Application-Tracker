@@ -44,29 +44,38 @@ export default function JobFormModal({ open, onClose, onSubmit, initial }) {
   return (
     <div style={overlay}>
       <div style={modal}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h3 style={{ margin: 0 }}>{initial ? "Edit Job" : "Add Job"}</h3>
+        <div style={header}>
+          <div>
+            <h3 style={title}>{initial ? "Edit Listing" : "New Application"}</h3>
+            <p style={subtitle}>Keep your job search organized.</p>
+          </div>
           <button onClick={onClose} style={xBtn}>✕</button>
         </div>
 
-        <form onSubmit={submit} style={{ marginTop: 12, display: "grid", gap: 10 }}>
-          <input placeholder="Company *" value={form.company} onChange={(e) => set("company", e.target.value)} style={inp} />
-          <input placeholder="Role *" value={form.role} onChange={(e) => set("role", e.target.value)} style={inp} />
-          <input placeholder="Job Link" value={form.jobLink} onChange={(e) => set("jobLink", e.target.value)} style={inp} />
+        <form onSubmit={submit} style={formGrid}>
+          <div style={row}>
+            <input placeholder="Company Name *" value={form.company} onChange={(e) => set("company", e.target.value)} style={inp} />
+            <input placeholder="Role / Position *" value={form.role} onChange={(e) => set("role", e.target.value)} style={inp} />
+          </div>
 
-          <select value={form.status} onChange={(e) => set("status", e.target.value)} style={inp}>
-            <option value="applied">applied</option>
-            <option value="interview">interview</option>
-            <option value="offer">offer</option>
-            <option value="rejected">rejected</option>
-          </select>
+          <input placeholder="Job Posting URL" value={form.jobLink} onChange={(e) => set("jobLink", e.target.value)} style={inp} />
 
-          <textarea placeholder="Job Description" value={form.jobDescription} onChange={(e) => set("jobDescription", e.target.value)} style={txt} />
-          <textarea placeholder="Notes" value={form.notes} onChange={(e) => set("notes", e.target.value)} style={txt} />
+          <div style={selectWrapper}>
+            <label style={selectLabel}>Application Status</label>
+            <select value={form.status} onChange={(e) => set("status", e.target.value)} style={selectInp}>
+              <option value="applied">Applied</option>
+              <option value="interview">Interview</option>
+              <option value="offer">Offer</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
 
-          <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-            <button type="button" onClick={onClose} style={btn2}>Cancel</button>
-            <button type="submit" style={btn1}>{initial ? "Save" : "Create"}</button>
+          <textarea placeholder="Brief Job Description..." value={form.jobDescription} onChange={(e) => set("jobDescription", e.target.value)} style={txt} />
+          <textarea placeholder="Personal Notes (Culture, salary, etc.)" value={form.notes} onChange={(e) => set("notes", e.target.value)} style={txt} />
+
+          <div style={footer}>
+            <button type="button" onClick={onClose} style={btn2}>Discard</button>
+            <button type="submit" style={btn1}>{initial ? "Save Changes" : "Add to Tracker"}</button>
           </div>
         </form>
       </div>
@@ -74,13 +83,138 @@ export default function JobFormModal({ open, onClose, onSubmit, initial }) {
   );
 }
 
+// --- Warm & Modern Modal Styles ---
+
 const overlay = {
-  position: "fixed", inset: 0, background: "rgba(0,0,0,0.25)",
-  display: "grid", placeItems: "center", padding: 16, zIndex: 50,
+  position: "fixed", 
+  inset: 0, 
+  background: "rgba(74, 55, 40, 0.4)", // Deep warm brown tint
+  backdropFilter: "blur(8px)",
+  display: "grid", 
+  placeItems: "center", 
+  padding: 20, 
+  zIndex: 1000,
 };
-const modal = { width: "100%", maxWidth: 560, background: "white", borderRadius: 14, padding: 16 };
-const inp = { padding: "10px 12px", borderRadius: 10, border: "1px solid #ddd" };
-const txt = { padding: "10px 12px", borderRadius: 10, border: "1px solid #ddd", minHeight: 90 };
-const btn1 = { padding: "10px 14px", borderRadius: 10, border: "1px solid #111", background: "#111", color: "white", cursor: "pointer" };
-const btn2 = { padding: "10px 14px", borderRadius: 10, border: "1px solid #ddd", background: "white", cursor: "pointer" };
-const xBtn = { border: "1px solid #eee", background: "white", borderRadius: 10, padding: "6px 10px", cursor: "pointer" };
+
+const modal = { 
+  width: "100%", 
+  maxWidth: 580, 
+  background: "#ffffff", 
+  borderRadius: 24, 
+  padding: 32,
+  boxShadow: "0 25px 50px -12px rgba(74, 55, 40, 0.25)",
+  border: "1px solid #f3e6df"
+};
+
+const header = { 
+  display: "flex", 
+  justifyContent: "space-between", 
+  alignItems: "flex-start",
+  marginBottom: 24 
+};
+
+const title = { 
+  margin: 0, 
+  fontSize: 22, 
+  fontWeight: 700, 
+  color: "#4a3728" 
+};
+
+const subtitle = {
+  margin: "4px 0 0 0",
+  fontSize: 14,
+  color: "#8c7662"
+};
+
+const formGrid = { 
+  display: "grid", 
+  gap: 16 
+};
+
+const row = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 12
+};
+
+const inp = { 
+  width: "100%",
+  padding: "12px 16px", 
+  borderRadius: 12, 
+  border: "1px solid #e8dfd8", 
+  background: "#fcfaf9",
+  fontSize: 14,
+  outline: "none",
+  color: "#4a3728",
+  boxSizing: "border-box"
+};
+
+const selectWrapper = {
+  position: "relative",
+  display: "flex",
+  flexDirection: "column",
+  gap: 6
+};
+
+const selectLabel = {
+  fontSize: 12,
+  fontWeight: 600,
+  color: "#8c7662",
+  paddingLeft: 4
+};
+
+const selectInp = {
+  ...inp,
+  appearance: "none",
+  cursor: "pointer",
+};
+
+const txt = { 
+  ...inp, 
+  minHeight: 100, 
+  resize: "vertical",
+  fontFamily: "inherit" 
+};
+
+const footer = { 
+  display: "flex", 
+  gap: 12, 
+  justifyContent: "flex-end", 
+  marginTop: 8 
+};
+
+const btn1 = { 
+  padding: "12px 24px", 
+  borderRadius: 12, 
+  border: "none", 
+  background: "#d97706", 
+  color: "white", 
+  fontWeight: 600,
+  cursor: "pointer",
+  boxShadow: "0 4px 10px rgba(217, 119, 6, 0.2)"
+};
+
+const btn2 = { 
+  padding: "12px 24px", 
+  borderRadius: 12, 
+  border: "1px solid #e8dfd8", 
+  background: "transparent", 
+  color: "#8c7662",
+  fontWeight: 600,
+  cursor: "pointer" 
+};
+
+const xBtn = { 
+  border: "none", 
+  background: "#fff7f2", 
+  color: "#d97706",
+  borderRadius: "50%", 
+  width: 32, 
+  height: 32, 
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: 16,
+  fontWeight: "bold"
+};

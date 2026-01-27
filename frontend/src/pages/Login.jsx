@@ -25,25 +25,141 @@ export default function Login() {
   return (
     <div style={wrap}>
       <form onSubmit={onSubmit} style={card}>
-        <h2 style={{ marginTop: 0 }}>Login</h2>
+        
+        
+        <h2 style={title}>Welcome Back</h2>
+        <p style={subtitle}>Log in to your account to continue.</p>
 
-        <input placeholder="Email" value={form.email} onChange={(e) => set("email", e.target.value)} style={inp} />
-        <input type="password" placeholder="Password" value={form.password} onChange={(e) => set("password", e.target.value)} style={inp} />
+        <div style={inputGroup}>
+          <input 
+            placeholder="Email Address" 
+            value={form.email} 
+            onChange={(e) => set("email", e.target.value)} 
+            style={inp} 
+          />
+        </div>
+
+        <div style={inputGroup}>
+          <input 
+            type="password" 
+            placeholder="Password" 
+            value={form.password} 
+            onChange={(e) => set("password", e.target.value)} 
+            style={inp} 
+          />
+        </div>
 
         {err && <div style={errBox}>{err}</div>}
 
         <button type="submit" style={btn}>Login</button>
 
-        <p style={{ fontSize: 14 }}>
-          New here? <Link to="/register">Create account</Link>
+        <p style={footerText}>
+          Don't have an account? <Link to="/register" style={link}>Register</Link>
         </p>
       </form>
     </div>
   );
 }
 
-const wrap = { minHeight: "calc(100vh - 60px)", display: "grid", placeItems: "center", padding: 16 };
-const card = { width: "100%", maxWidth: 420, border: "1px solid #eee", borderRadius: 14, padding: 16, background: "white" };
-const inp = { width: "100%", padding: "10px 12px", borderRadius: 10, border: "1px solid #ddd", marginTop: 10 };
-const btn = { width: "100%", padding: "10px 12px", borderRadius: 10, border: "1px solid #111", background: "#111", color: "white", cursor: "pointer", marginTop: 12 };
-const errBox = { marginTop: 10, padding: 10, borderRadius: 10, background: "#fff0f0", border: "1px solid #f2c0c0", fontSize: 14 };
+
+
+const wrap = { 
+  minHeight: "100vh", 
+  display: "flex", 
+  alignItems: "center", 
+  justifyContent: "center", 
+  padding: "20px",
+  background: "#fdf8f5", 
+  fontFamily: "Inter,'Segoe UI', Roboto, sans-serif"
+};
+
+const card = { 
+  width: "100%", 
+  maxWidth: "400px", 
+  backgroundColor: "#ffffff", 
+  borderRadius: "28px", 
+  padding: "48px 40px", 
+  boxShadow: "0 20px 40px rgba(184, 115, 81, 0.1)", 
+  textAlign: "center",
+  border: "1px solid #f3e6df"
+};
+
+const iconContainer = {
+  width: "56px",
+  height: "56px",
+  backgroundColor: "#fff7f2",
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  margin: "0 auto 24px auto",
+  border: "1px solid #f3e6df"
+};
+
+const title = { 
+  margin: "0 0 8px 0", 
+  fontSize: "24px", 
+  fontWeight: "600", 
+  color: "#4a3728", 
+  letterSpacing: "-0.3px"
+};
+
+const subtitle = {
+  margin: "0 0 32px 0",
+  fontSize: "15px",
+  color: "#8c7662", 
+};
+
+const inputGroup = {
+  marginBottom: "12px"
+};
+
+const inp = { 
+  width: "100%", 
+  padding: "14px 16px", 
+  borderRadius: "14px", 
+  border: "1px solid #e8dfd8", 
+  background: "#fcfaf9",
+  fontSize: "15px",
+  outline: "none",
+  color: "#4a3728",
+  transition: "all 0.2s ease",
+  boxSizing: "border-box"
+};
+
+const btn = { 
+  width: "100%", 
+  padding: "16px", 
+  borderRadius: "14px", 
+  border: "none", 
+  background: "#d97706", 
+  color: "white", 
+  fontSize: "16px",
+  fontWeight: "600",
+  cursor: "pointer", 
+  marginTop: "16px",
+  boxShadow: "0 4px 12px rgba(217, 119, 6, 0.25)",
+};
+
+const errBox = { 
+  marginTop: "12px", 
+  padding: "12px", 
+  borderRadius: "10px", 
+  background: "#fff1f1", 
+  border: "1px solid #fee2e2", 
+  color: "#b91c1c",
+  fontSize: "13px"
+};
+
+const footerText = { 
+  fontSize: "14px", 
+  marginTop: "28px", 
+  color: "#8c7662" 
+};
+
+const link = {
+  color: "#d97706",
+  textDecoration: "none",
+  fontWeight: "600",
+  paddingLeft: "4px"
+};

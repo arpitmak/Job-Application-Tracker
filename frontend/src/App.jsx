@@ -8,6 +8,7 @@ import { useAuth } from "./Auth/AuthContext";
 
 export default function App() {
   const { isAuthed } = useAuth();
+  
 
   return (
     <>

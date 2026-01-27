@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
       password,
       confirmPassword,
     });
-    // backend returns { user: {...} } only (no token)
+   
     return res.data;
   };
 

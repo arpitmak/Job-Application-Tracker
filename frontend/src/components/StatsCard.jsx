@@ -3,28 +3,59 @@ export default function StatsCards({ stats }) {
   const byStatus = stats?.data?.byStatus ?? {};
 
   const items = [
-    ["Total", total],
-    ["Applied", byStatus.applied ?? 0],
-    ["Interview", byStatus.interview ?? 0],
-    ["Offer", byStatus.offer ?? 0],
-    ["Rejected", byStatus.rejected ?? 0],
+    { label: "Total Applications", value: total, color: "#4a3728" },
+    { label: "Applied", value: byStatus.applied ?? 0, color: "#92400e" },
+    { label: "Interviews", value: byStatus.interview ?? 0, color: "#166534" },
+    { label: "Offers", value: byStatus.offer ?? 0, color: "#1e40af" },
+    { label: "Rejected", value: byStatus.rejected ?? 0, color: "#991b1b" },
   ];
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 10 }}>
-      {items.map(([label, value]) => (
-        <div key={label} style={card}>
-          <div style={{ fontSize: 12, opacity: 0.7 }}>{label}</div>
-          <div style={{ fontSize: 20, fontWeight: 800 }}>{value}</div>
+    <div style={grid}>
+      {items.map((item) => (
+        <div key={item.label} style={{ ...card }}>
+          <span style={labelStyle}>{item.label}</span>
+          <span style={{ ...valueStyle, color: item.color }}>{item.value}</span>
         </div>
       ))}
     </div>
   );
 }
 
+
+const grid = { 
+  display: "grid", 
+  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", 
+  gap: "16px",
+  marginBottom: "32px"
+};
+
 const card = {
-  border: "1px solid #eee",
-  borderRadius: 12,
-  padding: 12,
-  background: "white",
+  backgroundColor: "#ffffff",
+  borderRadius: "16px",
+  padding: "24px 16px",
+  boxShadow: "0 4px 12px rgba(74, 55, 40, 0.03)",
+  border: "1px solid #f3e6df",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "8px",
+  textAlign: "center" 
+};
+
+const labelStyle = { 
+  fontSize: "11px", 
+  fontWeight: "700",
+  textTransform: "uppercase",
+  letterSpacing: "1px",
+  color: "#8c7662",
+  opacity: 0.8
+};
+
+const valueStyle = { 
+  fontSize: "36px", 
+  fontWeight: "800",
+  fontFamily: "inherit",
+  lineHeight: "1"
 };

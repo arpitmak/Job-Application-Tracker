@@ -7,23 +7,18 @@ import JobFormModal from "../components/JobFormModel";
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
-
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-
-  const [status, setStatus] = useState(""); // filter
-  const [search, setSearch] = useState(""); // search input
-  const [searchLive, setSearchLive] = useState(""); // debounced value
-
+  const [status, setStatus] = useState(""); 
+  const [search, setSearch] = useState(""); 
+  const [searchLive, setSearchLive] = useState(""); 
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
 
-  // debounce search
   useEffect(() => {
     const t = setTimeout(() => setSearchLive(search), 400);
     return () => clearTimeout(t);
@@ -59,15 +54,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchStats().catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     fetchJobs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
-  // reset to page 1 when filters change
   useEffect(() => {
     setPage(1);
   }, [status, searchLive, limit]);
@@ -117,44 +109,53 @@ export default function Dashboard() {
   };
 
   return (
-    <div style={{ padding: 16, maxWidth: 1100, margin: "0 auto" }}>
-      <h2 style={{ marginTop: 0 }}>Dashboard</h2>
+    <div style={container}>
+      <header style={header}>
+        <div>
+          <h2 style={title}>Main Dashboard</h2>
+          <p style={subtitle}>Overview of your current job hunt</p>
+        </div>
+        <button onClick={openCreate} style={primaryBtn}>+ Add New Job</button>
+      </header>
 
       <StatsCards stats={stats} />
 
       <div style={toolbar}>
-        <button onClick={openCreate} style={primaryBtn}>+ Add Job</button>
+        <div style={filterGroup}>
+          <div style={searchWrapper}>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by company or role..."
+              style={searchInp}
+            />
+          </div>
 
-        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search company / role..."
-            style={inp}
-          />
-
-          <select value={status} onChange={(e) => setStatus(e.target.value)} style={inp}>
-            <option value="">All status</option>
-            <option value="applied">applied</option>
-            <option value="interview">interview</option>
-            <option value="offer">offer</option>
-            <option value="rejected">rejected</option>
+          <select value={status} onChange={(e) => setStatus(e.target.value)} style={selectInp}>
+            <option value="">All Statuses</option>
+            <option value="applied">Applied</option>
+            <option value="interview">Interview</option>
+            <option value="offer">Offer</option>
+            <option value="rejected">Rejected</option>
           </select>
 
-          <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} style={inp}>
-            <option value={5}>5 / page</option>
-            <option value={10}>10 / page</option>
-            <option value={20}>20 / page</option>
-            <option value={50}>50 / page</option>
+          <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} style={selectInp}>
+            <option value={5}>Show 5</option>
+            <option value={10}>Show 10</option>
+            <option value={20}>Show 20</option>
           </select>
         </div>
       </div>
 
       {err && <div style={errBox}>{err}</div>}
+      
       {loading ? (
-        <div style={{ marginTop: 12 }}>Loading...</div>
+        <div style={loadingState}>
+          <div style={spinner}></div>
+          <p>Refreshing your listings...</p>
+        </div>
       ) : (
-        <>
+        <div style={{ animation: "fadeIn 0.5s ease" }}>
           <JobTable
             jobs={jobs}
             onEdit={openEdit}
@@ -162,7 +163,7 @@ export default function Dashboard() {
             onQuickStatus={quickStatus}
           />
           <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
-        </>
+        </div>
       )}
 
       <JobFormModal
@@ -175,35 +176,117 @@ export default function Dashboard() {
   );
 }
 
+
+const container = { 
+  padding: "40px 20px", 
+  maxWidth: 1140, 
+  margin: "0 auto",
+  fontFamily: "'Inter', 'Segoe UI', sans-serif",
+  color: "#4a3728"
+};
+
+const header = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  marginBottom: "32px",
+  flexWrap: "wrap",
+  gap: "20px"
+};
+
+const title = { 
+  margin: 0, 
+  fontSize: "28px", 
+  fontWeight: "800",
+  letterSpacing: "-0.5px"
+};
+
+const subtitle = {
+  margin: "4px 0 0 0",
+  fontSize: "15px",
+  color: "#8c7662"
+};
+
 const toolbar = {
-  marginTop: 14,
+  marginTop: "24px",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: 12,
-  flexWrap: "wrap",
+  gap: "16px",
+};
+
+const filterGroup = { 
+  display: "flex", 
+  gap: "12px", 
+  alignItems: "center", 
+  width: "100%",
+  flexWrap: "wrap" 
 };
 
 const primaryBtn = {
-  padding: "10px 14px",
-  borderRadius: 10,
-  border: "1px solid #111",
-  background: "#111",
+  padding: "12px 24px",
+  borderRadius: "14px",
+  border: "none",
+  background: "#d97706",
   color: "white",
+  fontWeight: "600",
+  fontSize: "14px",
   cursor: "pointer",
+  boxShadow: "0 4px 12px rgba(217, 119, 6, 0.2)",
+  transition: "transform 0.2s ease"
 };
 
-const inp = {
-  padding: "10px 12px",
-  borderRadius: 10,
-  border: "1px solid #ddd",
+const searchWrapper = {
+  flex: 1,
+  minWidth: "250px"
+};
+
+const searchInp = {
+  width: "100%",
+  padding: "12px 16px",
+  borderRadius: "12px",
+  border: "1px solid #e8dfd8",
+  background: "#ffffff",
+  fontSize: "14px",
+  outline: "none",
+  color: "#4a3728",
+  boxSizing: "border-box"
+};
+
+const selectInp = {
+  padding: "12px 16px",
+  borderRadius: "12px",
+  border: "1px solid #e8dfd8",
+  background: "#ffffff",
+  fontSize: "14px",
+  color: "#4a3728",
+  outline: "none",
+  cursor: "pointer"
+};
+
+const loadingState = {
+  textAlign: "center",
+  padding: "60px",
+  color: "#8c7662"
+};
+
+const spinner = {
+  width: "30px",
+  height: "30px",
+  border: "3px solid #f3e6df",
+  borderTop: "3px solid #d97706",
+  borderRadius: "50%",
+  margin: "0 auto 16px auto",
+  animation: "spin 1s linear infinite"
 };
 
 const errBox = {
-  marginTop: 12,
-  padding: 10,
-  borderRadius: 10,
-  background: "#fff0f0",
-  border: "1px solid #f2c0c0",
-  fontSize: 14,
+  marginTop: 16,
+  padding: "14px",
+  borderRadius: "12px",
+  background: "#fff1f1",
+  border: "1px solid #fee2e2",
+  color: "#b91c1c",
+  fontSize: "14px",
+  fontWeight: "500"
 };
