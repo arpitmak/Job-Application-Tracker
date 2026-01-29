@@ -90,7 +90,7 @@ export default function JobTable({
           ) : (
             <tr>
               <td style={{ ...td, textAlign: "center", padding: "40px" }} colSpan={6}>
-                <div style={{ opacity: 0.5, fontSize: "16px" }}>No applications found yet. 🌱</div>
+                <div style={{ opacity: 0.5, fontSize: "16px" }}>No applications found yet.</div>
               </td>
             </tr>
           )}

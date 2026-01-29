@@ -23,6 +23,8 @@ if (NODE_ENV === "development") {
 app.use("/health", healthRoutes);
 app.use("/auth",authRoutes);
 app.use("/jobs",job_routes);
+app.use("/api/ai", require("./routes/ai_routes"));
+
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

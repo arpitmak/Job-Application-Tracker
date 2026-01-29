@@ -99,14 +99,24 @@ export default function Dashboard() {
     }
   };
 
-  const quickStatus = async (id, newStatus) => {
-    try {
-      await client.patch(`/jobs/${id}/status`, { status: newStatus });
-      await Promise.allSettled([fetchJobs(), fetchStats()]);
-    } catch (e) {
-      alert(e?.response?.data?.message || "Status update failed");
-    }
-  };
+const quickStatus = async (id, newStatus) => {
+  
+  setJobs((prev) =>
+    prev.map((j) => (j._id === id ? { ...j, status: newStatus } : j))
+  );
+
+  try {
+    
+    await client.patch(`/jobs/${id}/status`, { status: newStatus });
+
+   
+    fetchStats().catch(() => {});
+  } catch (e) {
+    
+    alert(e?.response?.data?.message || "Status update failed");
+    fetchJobs(); 
+  }
+};
 
   return (
     <div style={container}>

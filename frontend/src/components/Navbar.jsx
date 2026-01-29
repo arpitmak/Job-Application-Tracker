@@ -23,8 +23,8 @@ export default function Navbar() {
         {isAuthed ? (
           <>
             <div style={styles.userInfo}>
-              <span style={styles.userLabel}>Welcome,</span>
-              <span style={styles.userName}>{user?.fullName?.split(' ')[0] || "User"}</span>
+              
+             <span style={styles.userName}> {user?.fullName || "User"}</span>
             </div>
             <button onClick={onLogout} style={styles.logoutBtn}>
               Logout
@@ -85,6 +85,7 @@ const styles = {
     display: "flex",
     flexDirection: "row",
     alignItems: "centre",
+    justifyContent:"centre",
     gap: "3px"
   },
   userLabel: {
@@ -97,7 +98,8 @@ const styles = {
   userName: { 
     fontSize: "16px", 
     fontWeight: "600",
-    color: "#4a3728" 
+    color: "#4a3728",
+     
   },
   link: { 
     textDecoration: "none", 

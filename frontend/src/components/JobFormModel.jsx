@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; 
 
 export default function JobFormModal({ open, onClose, onSubmit, initial }) {
   const [form, setForm] = useState({
@@ -9,6 +9,10 @@ export default function JobFormModal({ open, onClose, onSubmit, initial }) {
     status: "applied",
     notes: "",
   });
+
+  // ✅ AI state (added)
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
 
   useEffect(() => {
     if (initial) {
@@ -30,11 +34,63 @@ export default function JobFormModal({ open, onClose, onSubmit, initial }) {
         notes: "",
       });
     }
+
+    // ✅ reset AI UI each time modal opens/changes (added)
+    setAiLoading(false);
+    setAiError("");
   }, [initial, open]);
 
   if (!open) return null;
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+
+  // ✅ AI Fill function (added)
+  const aiFill = async () => {
+    setAiError("");
+
+    const jd = form.jobDescription?.trim();
+    if (!jd || jd.length < 40) {
+      setAiError("Paste a longer job description for AI Fill.");
+      return;
+    }
+
+    try {
+      setAiLoading(true);
+
+      const res = await fetch("/api/ai/parse-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobDescription: jd }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setAiError(data?.message || "AI Fill failed.");
+        return;
+      }
+
+      setForm((prev) => {
+        const summary = (data.summary || "").trim();
+        const nextNotes = summary
+          ? (prev.notes
+              ? `${prev.notes}\n\nAI Summary: ${summary}`
+              : `AI Summary: ${summary}`)
+          : prev.notes;
+
+        return {
+          ...prev,
+          company: data.company?.trim() ? data.company.trim() : prev.company,
+          role: data.role?.trim() ? data.role.trim() : prev.role,
+          notes: nextNotes,
+        };
+      });
+    } catch (e) {
+      setAiError("Network error while calling AI. Try again.");
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const submit = (e) => {
     e.preventDefault();
@@ -71,11 +127,33 @@ export default function JobFormModal({ open, onClose, onSubmit, initial }) {
           </div>
 
           <textarea placeholder="Brief Job Description..." value={form.jobDescription} onChange={(e) => set("jobDescription", e.target.value)} style={txt} />
+
+          {/* ✅ AI button UI (added) */}
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <button
+              type="button"
+              onClick={aiFill}
+              disabled={aiLoading}
+              style={{
+                ...btn2,
+                borderColor: "#f2c18b",
+                color: "#b45309",
+                background: aiLoading ? "#fff7ed" : "#fffaf5",
+              }}
+            >
+              {aiLoading ? "Filling…" : "Auto-extract Job Details"}
+            </button>
+
+            {aiError ? (
+              <span style={{ fontSize: 12, color: "#b91c1c" }}>{aiError}</span>
+            ) : null}
+          </div>
+
           <textarea placeholder="Personal Notes (Culture, salary, etc.)" value={form.notes} onChange={(e) => set("notes", e.target.value)} style={txt} />
 
           <div style={footer}>
             <button type="button" onClick={onClose} style={btn2}>Discard</button>
-            <button type="submit" style={btn1}>{initial ? "Save Changes" : "Add to Tracker"}</button>
+            <button type="submit" style={btn1}>{initial ? "Save Changes" : "Add Job"}</button>
           </div>
         </form>
       </div>
