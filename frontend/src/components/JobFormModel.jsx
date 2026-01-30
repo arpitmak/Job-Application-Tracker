@@ -13,6 +13,7 @@ export default function JobFormModal({ open, onClose, onSubmit, initial }) {
   // ✅ AI state (added)
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState("");
+  const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (initial) {
@@ -57,7 +58,7 @@ export default function JobFormModal({ open, onClose, onSubmit, initial }) {
     try {
       setAiLoading(true);
 
-      const res = await fetch("/api/ai/parse-job", {
+      const res = await fetch(`${API}/api/ai/parse-job`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jobDescription: jd }),
